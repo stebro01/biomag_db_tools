@@ -1,0 +1,43 @@
+#!/bin/bash
+#USAGE: pm_rm_from_subfolders MAINFOLDER search_str
+#	ie: pm_rm_from_subfolders . *.mat
+
+if [ "$#" -lt 2 ]; then
+	echo "Usage: pm_rm_from_subfolders MAINFOLDER search_str"
+	echo "		ie: ie: pm_rm_from_subfolders pwd *.mat"
+	exit 1
+fi
+
+if [ "$1" == "/" ]; then
+	echo "Invalid usage!";
+	exit;
+fi
+
+if [ "$1" == "pwd" ]; then
+	main_dir=$(pwd)
+else
+	main_dir=$1
+fi
+
+echo "Do you wish remove all '$2' from: $main_dir?"
+select yn in "Yes" "No"; do
+    case $yn in
+	Yes ) break;;
+	No ) exit;;
+    esac
+done
+
+echo "starting .."
+
+for dir in $main_dir
+do
+    for file in "$dir"/*
+    do
+        if [[ -d $file ]]
+        then
+		echo "lösche: $file/$2"
+		rm $file/$2
+            
+        fi
+    done
+done

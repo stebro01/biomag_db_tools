@@ -1,0 +1,17 @@
+#!/bin/sh
+if [ "$#" -ne 2 ]; then
+	echo "Usage: pm_series_get_multiple ID.txt PROJECT_FOLDER"
+	echo "  ID.txt >> text-file containing Notion-IDs (zeilenweise)"
+	exit 1
+fi
+
+echo "Lese IDs von: $1"
+
+# oeffne jetzt die datei und lese Zeilenweise
+while read line; do    
+	echo $line
+	pm_series_get $line $2
+done < $1
+
+
+

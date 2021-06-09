@@ -1,0 +1,3 @@
+#!/bin/bash
+# simple script to run pm_subject_random_id.py
+python3 /BIOMAG_DATA/scripts/pm/pm_subject_random_id.py "$@"

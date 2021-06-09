@@ -1,0 +1,48 @@
+#!/bin/bash
+if [ "$#" -lt 1 ]; then
+	echo "Usage: pm_zip_subfolders SUBFOLDER"
+	ls -la
+	exit 1
+fi
+
+query=true
+
+for var in "$@"
+	do
+		if [[ "$var" == */ ]]
+		then
+			var=${var::-1}
+			
+		fi
+
+		if [[ "$var" == "-y" ]]
+		then
+			query=false
+		else
+	    		echo "$var > $var.zip"
+			zip -r "$var.zip" $var
+		fi
+	done
+
+
+echo "ZIPPING DONE: "
+ls -la
+
+if $query;then
+	echo "Do you wish remove all non zip-files?"
+	select yn in "Yes" "No"; do
+	    case $yn in
+		Yes ) break;;
+		No ) exit;;
+	    esac
+	done
+fi
+
+#now delete the files
+echo "deleting ..."
+GLOBIGNORE=*.json:*.zip:*.txt:*gz:*.mat:*.xls*:*.log
+rm -vrf *
+unset GLOBIGNORE
+
+
+

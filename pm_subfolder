@@ -1,0 +1,37 @@
+#!/bin/bash
+#USAGE: pm_subfolder MAINFOLDER search_str
+#	ie: pm_subfolder . *.mat
+
+if [ "$#" -lt 2 ]; then
+	echo "Usage: pm_subfolder MAINFOLDER CMD ARG"
+	echo "		ie: ie: pm_subfolder pwd pm_zip_subfolders EPI/ t1/ -y"
+	exit 1
+fi
+
+if [ "$1" == "/" ]; then
+	echo "Invalid usage!";
+	exit;
+fi
+
+if [ "$1" == "pwd" ]; then
+	main_dir=$(pwd)
+else
+	main_dir=$1
+fi
+
+echo "starting .."
+
+for dir in $main_dir
+do
+    for file in "$dir"/*
+    do
+        if [[ -d $file ]]
+        then
+		cd $file
+		CMD="cd $file; $2 ${@:3}"
+		echo "$CMD"
+		eval "$CMD";
+            
+        fi
+    done
+done

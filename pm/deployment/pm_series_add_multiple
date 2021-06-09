@@ -1,0 +1,18 @@
+#!/bin/sh
+if [ "$#" -ne 2 ]; then
+	echo "Usage: pm_series_add_multiple FOLDER NOTES"
+	echo "  FOLDER: enthält Unterordner mit den Hinzuzufügenden Daten, Ordnername wird als 'description' übernommen"
+	echo "	NOTES: kurze Beschreibung des zugehörigen Projektes / Experiments"
+	exit 1
+fi
+
+echo "Scanne: $1  notes: $2"
+echo "Gefunden: "
+echo "$(find $1 -maxdepth 1 -mindepth 1 -type d)"
+
+find $1 -maxdepth 1 -mindepth 1 -type d | while read dir; do
+  part1=`basename "$dir"`
+  echo "LESE: $part1 ...................."
+  pm_series_add $dir $part1 "$2"
+  
+done
