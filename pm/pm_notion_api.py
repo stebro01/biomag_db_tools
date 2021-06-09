@@ -1,11 +1,6 @@
 import requests
 import json
-
-DATABASE_ID = "fcb8a6d24f2244cb80f0889497dba684"
-# https://www.notion.so/fcb8a6d24f2244cb80f0889497dba684?v=6b5e2b51e1e44c56b24b213b371bccd6
-NOTION_URL = 'https://api.notion.com/v1/databases/'
-POST_URL = 'https://api.notion.com/v1/pages/'
-TOKEN = "Bearer secret_Aj82oDGkp6lUL7tPpGru22izDDFiNkquMRK1Cw5DNwv"
+import os
 
 # lokal funktion for visualising and debugging json
 def pp_json(json_thing, sort=True, indents=4):
@@ -16,18 +11,30 @@ def pp_json(json_thing, sort=True, indents=4):
     return None
 
 class NotionSync:
+    NOTION_URL = None
+    DATABASE_ID = None
+    POST_URL = None
+    TOKEN = None
+
     def __init__(self):
+        # LOAD PRESETS FROM JSON FILE
+        with open(os.path.join(os.path.dirname(__file__), 'pm_settings.json')) as f:
+            presets = json.load(f)
+        self.NOTION_URL = presets["NOTION_URL"]
+        self.DATABASE_ID = presets["DATABASE_ID"]
+        self.POST_URL = presets["POST_URL"]
+        self.TOKEN = presets["TOKEN"]
         pass    
 
     def get_headers(self):
         headers = {
-            "Authorization": f"{TOKEN}",
+            "Authorization": f"{self.TOKEN}",
             "Content-Type": "application/json"
         }
         return headers
 
     def query_databases(self, payload):
-        database_url = NOTION_URL + DATABASE_ID + "/query"
+        database_url = self.NOTION_URL + self.DATABASE_ID + "/query"
         response = requests.post(database_url, headers=self.get_headers(), json=payload)
         if response.status_code != 200:
             raise ApiError(f'Response Status: {response.status_code}')
@@ -80,7 +87,7 @@ class NotionSync:
                 if len(results[key]["relation"]) > 0:
                     # try to resolve the RELATION
                     ID = results[key]["relation"][0]["id"]
-                    url = POST_URL + ID
+                    url = self.POST_URL + ID
                     response = requests.request("GET", url, headers=self.get_headers(), data={})
                     json = response.json()
                     for key2 in json["properties"].keys():
@@ -106,15 +113,15 @@ class NotionSync:
         # ADD SOME DATA
         data = {
             "parent": {
-                "database_id": DATABASE_ID
+                "self.DATABASE_ID": self.DATABASE_ID
             },
             "properties": self.make_properties(payload)
         } 
-        if payload.get('database_id') != None:
-            data["parent"]["database_id"] = payload.get('database_id')
+        if payload.get('self.DATABASE_ID') != None:
+            data["parent"]["self.DATABASE_ID"] = payload.get('self.DATABASE_ID')
 
         # pp_json(data)
-        response = requests.request("POST", POST_URL, headers=self.get_headers(), json=data)
+        response = requests.request("POST", self.POST_URL, headers=self.get_headers(), json=data)
         res = response.json()
         # NOW MODIFY THE RESULT   
         update_success = self.update_entry(res["id"], {"NID": res["id"]})
@@ -128,7 +135,7 @@ class NotionSync:
     def update_entry(self, id, payload):
         json = self.make_properties(payload)
         # pp_json(json)
-        response = requests.request("PATCH", POST_URL + id, headers=self.get_headers(), json={"properties": json})
+        response = requests.request("PATCH", self.POST_URL + id, headers=self.get_headers(), json={"properties": json})
         return response.status_code
 
     # MAKE_PROPERTY
@@ -184,7 +191,7 @@ class NotionSync:
         
 
 # # MAIN FUNCTIONS
-# nsync = NotionSync()
+nsync = NotionSync()
 # data = nsync.query_databases({})
 # pp_json(data)
 # # # FIELDNAMES
@@ -200,5 +207,5 @@ class NotionSync:
 
 # # pp_json(nsync.make_properties({"NID": "lskdjfklej"}))
 
-# res = nsync.get_entry({"NID": "606e69c1-dcfd-4b13-bdd3-42e01866b2b7"})
-# pp_json(res)
+res = nsync.get_entry({"NID": "606e69c1-dcfd-4b13-bdd3-42e01866b2b7"})
+pp_json(res)

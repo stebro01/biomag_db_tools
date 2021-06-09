@@ -1,8 +1,9 @@
 {
-    "token_v2": "65369569a9736eb2374448e4ccca09c7c6a70a57e61c9f4bc4a9875d10ffe9fa6e1903a8697d46aafb23c886d2aaea8c24e9b98bb7f3e98184993be5dd67d728483beb6c95f4d28cb09801b238ed", 
-    "url_series": "https://www.notion.so/8bb0af001f5d440994247d5b5d5166c5?v=360cedf4505e4130b43e97db6104bec3",
-    "url_subjects": "https://www.notion.so/00ced9605f17439dba20299aa259f090?v=051b464c7e014992a6eb69a5e88f209a",
-   
+    "DATABASE_ID": "fcb8a6d24f2244cb80f0889497dba684",
+    "NOTION_URL": "https://api.notion.com/v1/databases/",
+    "POST_URL": "https://api.notion.com/v1/pages/",
+    "TOKEN": "Bearer secret_Aj82oDGkp6lUL7tPpGru22izDDFiNkquMRK1Cw5DNwv",
+
     "storage_dir": "/BIOMAG_DATA/STORAGE",
     "project_root_dir": "/BIOMAG_DATA/Projects",
     "demo_data_dir": "/BIOMAG_DATA/inbox/sample_data",
