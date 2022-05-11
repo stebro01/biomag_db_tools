@@ -24,7 +24,7 @@ def save_to_notion(presets, meta, data_dir, files, modus):
     print('+ öffne Verbindung zu NOTION')
     nsync = NotionSync()
     meta["status"] = "schreibe"
-    meta["files"] = files
+    # meta["files"] = files #HIER SOLLTE ICH NOCHMAL TESTEN!!!
     status_id = nsync.add_entry(meta)
 
     print('+ UPDATE PFAD')

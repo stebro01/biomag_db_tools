@@ -1,14 +1,6 @@
 import requests
 import json
-import os
-
-# lokal funktion for visualising and debugging json
-def pp_json(json_thing, sort=True, indents=4):
-    if type(json_thing) is str:
-        print(json.dumps(json.loads(json_thing), sort_keys=sort, indent=indents))
-    else:
-        print(json.dumps(json_thing, sort_keys=sort, indent=indents))
-    return None
+import os    
 
 class NotionSync:
     NOTION_URL = None
@@ -25,6 +17,13 @@ class NotionSync:
         self.POST_URL = presets["POST_URL"]
         self.TOKEN = presets["TOKEN"]
         pass    
+        
+    def pp_json(self, json_thing, sort=True, indents=4):
+        if type(json_thing) is str:
+            print(json.dumps(json.loads(json_thing), sort_keys=sort, indent=indents))
+        else:
+            print(json.dumps(json_thing, sort_keys=sort, indent=indents))
+        return None
 
     def get_headers(self):
         headers = {
@@ -113,17 +112,19 @@ class NotionSync:
         # ADD SOME DATA
         data = {
             "parent": {
-                "self.DATABASE_ID": self.DATABASE_ID
+                "database_id": self.DATABASE_ID
             },
             "properties": self.make_properties(payload)
         } 
-        if payload.get('self.DATABASE_ID') != None:
-            data["parent"]["self.DATABASE_ID"] = payload.get('self.DATABASE_ID')
+        
+        if payload.get('database_id') != None:
+            data["parent"]["database_id"] = payload.get('database_id')
 
         # pp_json(data)
         response = requests.request("POST", self.POST_URL, headers=self.get_headers(), json=data)
         res = response.json()
-        # NOW MODIFY THE RESULT   
+        # NOW MODIFY THE RESULT
+
         update_success = self.update_entry(res["id"], {"NID": res["id"]})
 
         if update_success == 200:
@@ -192,20 +193,24 @@ class NotionSync:
 
 # # MAIN FUNCTIONS
 nsync = NotionSync()
+
+
+
+# # SOMETHIN FOR TESTING
 # data = nsync.query_databases({})
-# pp_json(data)
+# print(data)
 # # # FIELDNAMES
-# # field_names = nsync.get_field_names(data)
-# # # pp_json(field_names)
+# field_names = nsync.get_field_names(data)
+# # pp_json(field_names)
 
 # # # RESULTS
-# # results = nsync.get_results(data)
+# results = nsync.get_results(data)
 # # pp_json(results)
 
 # # # ADD ENTRY
-# # nsync.add_entry({"folder": "12fjlkeje"})
+# nsync.add_entry({"folder": "12fjlkeje"})
 
 # # pp_json(nsync.make_properties({"NID": "lskdjfklej"}))
 
-res = nsync.get_entry({"NID": "606e69c1-dcfd-4b13-bdd3-42e01866b2b7"})
-pp_json(res)
+# res = nsync.get_entry({"NID": "606e69c1-dcfd-4b13-bdd3-42e01866b2b7"})
+# # pp_json(res)
